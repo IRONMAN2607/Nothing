@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#100918" />
+  <title>Nothing Interesting</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600;700&family=Great+Vibes&family=Inter:wght@500;600;700;800;900&family=Parisienne&family=Playfair+Display:ital,wght@0,600;0,700;1,500;1,600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="ambient-container" id="ambientContainer"></div>
+  <main class="stage" aria-live="polite">
+    <div class="ambient ambient-one"></div>
+    <div class="ambient ambient-two"></div>
+
+    <button class="scene-button" id="sceneButton" type="button" aria-label="Continue birthday surprise">
+      <span class="hint" id="hint"></span>
+
+      <section class="message-scene active" id="messageScene">
+        <p class="small-text" id="smallText">Nothing interesting.</p>
+        <h1 id="mainText">No need to click here</h1>
+      </section>
+
+      <section class="fine-scene" id="fineScene" aria-hidden="true">
+        <span class="fine-word" id="fineWord">FINE</span>
+      </section>
+
+      <section class="envelope-scene" id="envelopeScene" aria-hidden="true">
+        <div class="envelope" id="envelope">
+          <div class="card" id="card">
+            <div class="card-face card-front" id="cardFront">
+              <p id="frontEyebrow">told you</p>
+              <strong id="frontTitle">nothing here</strong>
+            </div>
+            <div class="card-face card-back birthday-face">
+              <p class="spark">Happy Birthday</p>
+              <h2>To someone wonderfully impossible to ignore</h2>
+              <p>May your day feel warm, magical, and full of tiny surprises.</p>
+              <p>You deserve joy, laughter, and every sweet thing the universe saved for today.</p>
+            </div>
+            <div class="card-face card-final">
+              <p class="welcome-line" id="welcomeLine">you're welcome</p>
+              <p class="signature" id="signature">- Angad</p>
+            </div>
+          </div>
+
+          <div class="envelope-back"></div>
+          <div class="envelope-paper"></div>
+          <div class="flap flap-left"></div>
+          <div class="flap flap-right"></div>
+          <div class="flap flap-bottom"></div>
+          <div class="flap flap-top" id="topFlap"></div>
+          <div class="seal" id="seal" aria-hidden="true">
+            <span>A</span>
+          </div>
+        </div>
+      </section>
+    </button>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>
