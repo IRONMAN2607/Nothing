@@ -54,6 +54,8 @@ body {
   isolation: isolate;
 }
 
+/* --- Ambient glow orbs --- */
+
 .ambient {
   position: fixed;
   width: min(72vw, 330px);
@@ -64,6 +66,7 @@ body {
   pointer-events: none;
   z-index: -1;
   transition: opacity 1800ms ease;
+  will-change: transform;
 }
 
 body.magical-theme .ambient {
@@ -83,6 +86,8 @@ body.magical-theme .ambient {
   background: #7c69ff;
   animation: floatGlow 9s ease-in-out infinite reverse;
 }
+
+/* --- Main interactive panel --- */
 
 .scene-button {
   position: relative;
@@ -115,6 +120,8 @@ body.magical-theme .scene-button {
   outline-offset: 5px;
 }
 
+/* --- Hint label at bottom --- */
+
 .hint {
   position: absolute;
   left: 50%;
@@ -132,6 +139,8 @@ body.magical-theme .scene-button {
 .hint.changing {
   animation: hintSwap 360ms var(--ease-out), breathe 1.9s ease-in-out 360ms infinite;
 }
+
+/* --- Scene containers --- */
 
 .message-scene,
 .fine-scene,
@@ -152,6 +161,12 @@ body.magical-theme .scene-button {
 .envelope-scene.active {
   opacity: 1;
   transform: translateY(0) scale(1);
+}
+
+.envelope-scene.active:has(.card-out),
+.envelope-scene.active:has(.card-flipped),
+.envelope-scene.active:has(.final-flipped) {
+  transform: translateY(48px) scale(1);
 }
 
 .message-scene {
@@ -187,6 +202,8 @@ h1 {
   text-shadow: 0 12px 34px rgba(0, 0, 0, 0.26);
 }
 
+/* --- "FINE" transition scene --- */
+
 .fine-word {
   display: inline-grid;
   place-items: center;
@@ -203,13 +220,18 @@ h1 {
   animation: fineToEnvelope 900ms var(--ease-out) forwards;
 }
 
+/* --- Envelope scene --- */
+
 .envelope-scene {
   perspective: 1400px;
+  perspective-origin: center center;
+  padding: 0;
 }
 
 .envelope {
   position: relative;
   width: min(76vw, 330px);
+  height: calc(min(76vw, 330px) / 1.32);
   aspect-ratio: 1.32;
   container-type: inline-size;
   transform-style: preserve-3d;
@@ -279,7 +301,10 @@ h1 {
   z-index: 7;
   transform-origin: top center;
   transition: transform 760ms cubic-bezier(0.22, 1, 0.36, 1), filter 760ms ease;
+  will-change: transform;
 }
+
+/* --- Wax seal --- */
 
 .seal {
   position: absolute;
@@ -300,6 +325,7 @@ h1 {
   font-weight: 900;
   transform: translate(-50%, -50%);
   transition: transform 500ms ease, opacity 500ms ease, filter 500ms ease;
+  will-change: transform, opacity, filter;
 }
 
 .seal::before,
@@ -336,6 +362,8 @@ h1 {
   animation: envelopeNudge 640ms var(--ease-out);
 }
 
+/* --- Card (shared base for all 3 faces) --- */
+
 .card {
   position: absolute;
   left: 50%;
@@ -347,90 +375,6 @@ h1 {
   transform: translate3d(-50%, 6%, -8px);
   transform-style: preserve-3d;
   transition: width 900ms var(--ease-out), height 900ms var(--ease-out), filter 700ms ease, transform 900ms var(--ease-out);
-}
-
-.card-face::after {
-  position: absolute;
-  inset: 0;
-  z-index: 5;
-  border-radius: inherit;
-  background: linear-gradient(115deg, transparent 38%, rgba(255, 255, 255, 0.55) 50%, transparent 62%);
-  opacity: 0;
-  pointer-events: none;
-  content: "";
-}
-
-.envelope.card-out .card {
-  width: 76%;
-  height: 90%;
-  z-index: 12;
-  filter: drop-shadow(0 26px 42px rgba(0, 0, 0, 0.38));
-}
-
-.envelope.card-flipped .card,
-.envelope.final-flipped .card {
-  width: 88%;
-  height: 122%;
-  z-index: 12;
-  filter: drop-shadow(0 26px 42px rgba(0, 0, 0, 0.38));
-}
-
-.envelope.card-out .card {
-  animation: cardEmerge 1050ms cubic-bezier(0.22, 1, 0.18, 1) forwards;
-}
-
-
-
-.envelope.card-out .flap-left,
-.envelope.card-out .flap-right,
-.envelope.card-flipped .flap-left,
-.envelope.card-flipped .flap-right,
-.envelope.final-flipped .flap-left,
-.envelope.final-flipped .flap-right {
-  z-index: 5;
-  opacity: 0.42;
-  transition: opacity 700ms ease;
-}
-
-.envelope.card-out .flap-bottom,
-.envelope.card-flipped .flap-bottom,
-.envelope.final-flipped .flap-bottom {
-  z-index: 6;
-  opacity: 0.5;
-  transition: opacity 700ms ease;
-}
-
-
-
-.envelope.card-flipped .card {
-  animation: cardFlipReveal 1200ms var(--ease-out) forwards;
-}
-
-.envelope.card-flipped .card-back::after,
-.envelope.final-flipped .card-front::after {
-  animation: cardShimmer 1000ms ease-out 600ms forwards;
-}
-
-.envelope.card-flipped {
-  animation: envelopeSettle 700ms var(--ease-out);
-}
-
-.envelope.card-flipped .card-front {
-  opacity: 0;
-  transition-delay: 360ms;
-}
-
-.envelope.card-flipped .card-back {
-  opacity: 1;
-  transition-delay: 360ms;
-}
-
-.envelope.final-flipped .card {
-  animation: cardFlipFinal 1200ms var(--ease-out) forwards;
-}
-
-.envelope.final-flipped {
-  animation: envelopeSettle 700ms var(--ease-out);
 }
 
 .card-face {
@@ -457,19 +401,108 @@ h1 {
   transition: opacity 480ms ease, outline 800ms ease, outline-offset 800ms ease, box-shadow 800ms ease;
 }
 
-.card-front {
+/* Shimmer overlay for card faces */
+.card-face::after {
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  border-radius: inherit;
+  background: linear-gradient(115deg, transparent 38%, rgba(255, 255, 255, 0.55) 50%, transparent 62%);
+  opacity: 0;
+  pointer-events: none;
+  content: "";
+}
+
+/* Shared base transform for all card faces */
+.card-front,
+.card-back,
+.card-final {
   transform: rotateY(0deg) translateZ(1px);
+}
+
+.card-front {
   z-index: 2;
 }
 
-.card-back {
-  transform: rotateY(0deg) translateZ(1px);
+.card-back,
+.card-final {
   opacity: 0;
 }
 
-.card-final {
-  transform: rotateY(0deg) translateZ(1px);
+/* --- Card-out state (card emerging from envelope) --- */
+
+.envelope.card-out .card {
+  width: 76%;
+  height: 90%;
+  z-index: 12;
+  filter: drop-shadow(0 26px 42px rgba(0, 0, 0, 0.38));
+  animation: cardEmerge 1050ms cubic-bezier(0.22, 1, 0.18, 1) forwards;
+}
+
+/* --- Card-flipped & final-flipped shared card sizing --- */
+
+.envelope.card-flipped .card,
+.envelope.final-flipped .card {
+  width: 88%;
+  height: 122%;
+  z-index: 12;
+  filter: drop-shadow(0 26px 42px rgba(0, 0, 0, 0.38));
+}
+
+/* --- Flap fade for card-out / card-flipped / final-flipped (consolidated) --- */
+
+.envelope.card-out .flap-left,
+.envelope.card-out .flap-right,
+.envelope.card-flipped .flap-left,
+.envelope.card-flipped .flap-right,
+.envelope.final-flipped .flap-left,
+.envelope.final-flipped .flap-right {
+  z-index: 5;
+  opacity: 0.42;
+  transition: opacity 700ms ease;
+}
+
+.envelope.card-out .flap-bottom,
+.envelope.card-flipped .flap-bottom,
+.envelope.final-flipped .flap-bottom {
+  z-index: 6;
+  opacity: 0.5;
+  transition: opacity 700ms ease;
+}
+
+/* --- Card flip reveal --- */
+
+.envelope.card-flipped .card {
+  animation: cardFlipReveal 1200ms var(--ease-out) forwards;
+}
+
+.envelope.card-flipped .card-back::after,
+.envelope.final-flipped .card-front::after {
+  animation: cardShimmer 1000ms ease-out 600ms forwards;
+}
+
+.envelope.card-flipped {
+  animation: envelopeSettle 700ms var(--ease-out);
+}
+
+.envelope.card-flipped .card-front {
   opacity: 0;
+  transition-delay: 360ms;
+}
+
+.envelope.card-flipped .card-back {
+  opacity: 1;
+  transition-delay: 360ms;
+}
+
+/* --- Final flip --- */
+
+.envelope.final-flipped .card {
+  animation: cardFlipFinal 1200ms var(--ease-out) forwards;
+}
+
+.envelope.final-flipped {
+  animation: envelopeSettle 700ms var(--ease-out);
 }
 
 .envelope.final-flipped .card-front {
@@ -485,6 +518,8 @@ h1 {
 .envelope.final-flipped .card-final {
   opacity: 0;
 }
+
+/* --- Card front text --- */
 
 .card-front p,
 .card-front strong {
@@ -508,6 +543,8 @@ h1 {
   overflow-wrap: break-word;
   text-wrap: balance;
 }
+
+/* --- Birthday face & final card face --- */
 
 .birthday-face,
 .card-final {
@@ -569,6 +606,8 @@ h1 {
   overflow-wrap: break-word;
 }
 
+/* --- Welcome line & signature (final card) --- */
+
 .welcome-line,
 .signature {
   margin: 0;
@@ -603,6 +642,8 @@ h1 {
   animation-delay: 780ms;
 }
 
+/* --- Burst particles --- */
+
 .burst {
   position: absolute;
   width: 8px;
@@ -612,6 +653,85 @@ h1 {
   pointer-events: none;
   animation: burst 720ms ease-out forwards;
 }
+
+/* --- Cursive mode for card front (typing animation) --- */
+
+.card-front.cursive-mode {
+  outline: 1px solid rgba(220, 100, 150, 0.22);
+  outline-offset: -8px;
+  box-shadow:
+    0 18px 38px rgba(0, 0, 0, 0.2),
+    inset 0 0 0 2px rgba(255, 255, 255, 0.45),
+    inset 0 -8px 20px rgba(220, 100, 150, 0.05);
+  gap: 12px;
+}
+
+.card-front::before {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.7), transparent 30%),
+    linear-gradient(160deg, #fff9fc, #ffdcf0);
+  content: "";
+  opacity: 0;
+  clip-path: circle(0% at 50% 100%);
+  transition: clip-path 1200ms cubic-bezier(0.25, 1, 0.5, 1), opacity 800ms ease;
+  z-index: -1;
+  pointer-events: none;
+}
+
+.card-front.cursive-mode::before {
+  opacity: 1;
+  clip-path: circle(150% at 50% 100%);
+}
+
+.card-front.cursive-mode p {
+  color: #c04875;
+  font-family: 'Great Vibes', cursive;
+  font-size: clamp(1.8rem, 11cqi, 2.5rem);
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  line-height: 1.1;
+  text-transform: none;
+  margin: 0;
+}
+
+.card-front.cursive-mode strong {
+  margin-top: 22px;
+  color: #593250;
+  font-family: 'Dancing Script', cursive;
+  font-size: clamp(1.4rem, 7.5cqi, 2rem);
+  font-weight: 700;
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+/* --- Ambient dewdrop patches --- */
+
+.ambient-container {
+  position: fixed;
+  inset: 0;
+  z-index: -2;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.dewdrop-patch {
+  position: absolute;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  mix-blend-mode: screen;
+  filter: blur(70px);
+  opacity: 0;
+  transform: translate(-50%, -50%) scale(0);
+  animation: dewdropSplash 2400ms cubic-bezier(0.19, 1, 0.22, 1) forwards;
+  pointer-events: none;
+}
+
+/* ===================================================================
+   KEYFRAME ANIMATIONS
+   =================================================================== */
 
 @keyframes breathe {
   50% { opacity: 0.38; transform: translateX(-50%) translateY(-4px); }
@@ -638,14 +758,14 @@ h1 {
 }
 
 @keyframes envelopeArrive {
-  from { opacity: 0; transform: translateY(22px) scale(0.76) rotate(-3deg); }
-  to { opacity: 1; transform: translateY(0) scale(1) rotate(0); }
+  from { opacity: 0; transform: translateY(22px) scale(0.76) rotate(-1.5deg); }
+  to { opacity: 1; transform: translateY(0) scale(1) rotate(0deg); }
 }
 
 @keyframes sealBreakNudge {
-  0%, 100% { transform: translateY(0) rotate(0); }
-  38% { transform: translateY(-5px) rotate(-1deg); }
-  70% { transform: translateY(2px) rotate(0.7deg); }
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  38% { transform: translateY(-5px) rotate(-0.5deg); }
+  70% { transform: translateY(2px) rotate(0.3deg); }
 }
 
 @keyframes envelopeNudge {
@@ -714,77 +834,6 @@ h1 {
   }
 }
 
-.card-front.cursive-mode {
-  outline: 1px solid rgba(220, 100, 150, 0.22);
-  outline-offset: -8px;
-  box-shadow:
-    0 18px 38px rgba(0, 0, 0, 0.2),
-    inset 0 0 0 2px rgba(255, 255, 255, 0.45),
-    inset 0 -8px 20px rgba(220, 100, 150, 0.05);
-  gap: 12px;
-}
-
-.card-front::before {
-  position: absolute;
-  inset: 0;
-  border-radius: inherit;
-  background:
-    linear-gradient(135deg, rgba(255, 255, 255, 0.7), transparent 30%),
-    linear-gradient(160deg, #fff9fc, #ffdcf0);
-  content: "";
-  opacity: 0;
-  clip-path: circle(0% at 50% 100%);
-  transition: clip-path 1200ms cubic-bezier(0.25, 1, 0.5, 1), opacity 800ms ease;
-  z-index: -1;
-  pointer-events: none;
-}
-
-.card-front.cursive-mode::before {
-  opacity: 1;
-  clip-path: circle(150% at 50% 100%);
-}
-
-.card-front.cursive-mode p {
-  color: #c04875;
-  font-family: 'Great Vibes', cursive;
-  font-size: clamp(1.8rem, 11cqi, 2.5rem);
-  font-weight: 500;
-  letter-spacing: 0.02em;
-  line-height: 1.1;
-  text-transform: none;
-  margin: 0;
-}
-
-.card-front.cursive-mode strong {
-  margin-top: 22px;
-  color: #593250;
-  font-family: 'Dancing Script', cursive;
-  font-size: clamp(1.4rem, 7.5cqi, 2rem);
-  font-weight: 700;
-  letter-spacing: 0;
-  text-transform: none;
-}
-
-.ambient-container {
-  position: fixed;
-  inset: 0;
-  z-index: -2;
-  overflow: hidden;
-  pointer-events: none;
-}
-
-.dewdrop-patch {
-  position: absolute;
-  aspect-ratio: 1;
-  border-radius: 50%;
-  mix-blend-mode: screen;
-  filter: blur(70px);
-  opacity: 0;
-  transform: translate(-50%, -50%) scale(0);
-  animation: dewdropSplash 2400ms cubic-bezier(0.19, 1, 0.22, 1) forwards;
-  pointer-events: none;
-}
-
 @keyframes dewdropSplash {
   0% {
     opacity: 0;
@@ -804,6 +853,7 @@ h1 {
   }
 }
 
+/* Simplified: removed redundant 55% keyframe that was identical to 100% */
 @keyframes cardFlipFinal {
   0% {
     transform: translate3d(-50%, -64%, 58px) scale(1.18) rotateY(0deg);
@@ -811,17 +861,18 @@ h1 {
   30% {
     transform: translate3d(-50%, -64%, 58px) scale(1.12) rotateY(90deg);
   }
-  55% {
-    transform: translate3d(-50%, -64%, 58px) scale(1.18) rotateY(0deg);
-  }
-  100% {
+  55%, 100% {
     transform: translate3d(-50%, -64%, 58px) scale(1.18) rotateY(0deg);
   }
 }
 
+/* ===================================================================
+   RESPONSIVE: Small phones (≤430px, covers Samsung Galaxy S23 FE)
+   =================================================================== */
+
 @media (max-width: 430px) {
   .scene-button {
-    width: min(calc(100vw - 52px), 410px);
+    width: min(calc(100vw - 44px), 410px);
     height: clamp(500px, 82svh, 680px);
     border-radius: 28px;
   }
@@ -832,8 +883,134 @@ h1 {
 
   .envelope {
     width: min(80vw, 315px);
+    height: calc(min(80vw, 315px) / 1.32);
+  }
+
+  .envelope-scene {
+    perspective: 1100px;
+    padding: 0;
+  }
+
+  /* Maintain standard card height for mobile to avoid text overflow */
+  .envelope.card-flipped .card,
+  .envelope.final-flipped .card {
+    width: 86%;
+    height: 122%;
+  }
+
+  .card-face {
+    padding: 10cqi 8cqi;
+    gap: 8px;
+  }
+
+  .birthday-face,
+  .card-final {
+    padding: 10cqi 8cqi;
+    gap: 8px;
+  }
+
+  .birthday-face .spark {
+    font-size: clamp(1.45rem, 8.5cqi, 1.95rem);
+  }
+
+  .birthday-face h2 {
+    font-size: clamp(0.95rem, 5cqi, 1.25rem);
+    margin: 1px 0 3px 0;
+  }
+
+  .birthday-face p:not(.spark) {
+    font-size: clamp(0.8rem, 4.2cqi, 1.05rem);
+    max-width: 100%;
+    line-height: 1.3;
+  }
+
+  .card-front.cursive-mode p {
+    font-size: clamp(1.45rem, 8.5cqi, 1.95rem);
+  }
+
+  .card-front.cursive-mode strong {
+    font-size: clamp(1.2rem, 6.5cqi, 1.7rem);
+    margin-top: 16px;
+  }
+
+  .welcome-line {
+    font-size: clamp(1.45rem, 8.5cqi, 1.95rem);
+  }
+
+  .signature {
+    font-size: clamp(1.2rem, 6.5cqi, 1.7rem);
+    margin-top: 16px;
+  }
+
+  /* Use reduced-Z keyframes on all phones */
+  .card {
+    transform: translate3d(-50%, 6%, -4px);
+  }
+
+  .envelope.card-out .card {
+    animation-name: cardEmerge-sm;
+  }
+
+  .envelope.card-flipped .card {
+    animation-name: cardFlipReveal-sm;
+  }
+
+  .envelope.final-flipped .card {
+    animation-name: cardFlipFinal-sm;
   }
 }
+
+/* ===================================================================
+   RESPONSIVE: Samsung Galaxy S23 FE & narrow phones (≤375px, 360px viewport)
+   =================================================================== */
+
+@media (max-width: 375px) {
+  .stage {
+    padding: max(16px, env(safe-area-inset-top)) max(14px, env(safe-area-inset-right)) max(16px, env(safe-area-inset-bottom)) max(14px, env(safe-area-inset-left));
+  }
+
+  .scene-button {
+    width: min(calc(100vw - 36px), 360px);
+    height: clamp(460px, 76svh, 620px);
+    border-radius: 24px;
+  }
+
+  h1 {
+    font-size: clamp(1.95rem, 10vw, 2.8rem);
+    width: min(100%, 13ch);
+  }
+
+  .small-text {
+    font-size: clamp(0.7rem, 1.8vw, 0.88rem);
+    letter-spacing: 0.1em;
+  }
+
+  .hint {
+    bottom: 16px;
+    font-size: 0.7rem;
+    letter-spacing: 0.1em;
+  }
+
+  .envelope-scene {
+    perspective: 900px;
+    padding: 0;
+  }
+
+  .envelope {
+    width: min(82vw, 290px);
+    height: calc(min(82vw, 290px) / 1.32);
+  }
+
+  .envelope.card-flipped .card,
+  .envelope.final-flipped .card {
+    width: 86%;
+    height: 122%;
+  }
+}
+
+/* ===================================================================
+   RESPONSIVE: Short viewports
+   =================================================================== */
 
 @media (max-height: 700px) {
   .scene-button {
@@ -842,12 +1019,140 @@ h1 {
 
   .envelope {
     width: min(72vw, 300px);
+    height: calc(min(72vw, 300px) / 1.32);
   }
 
   .birthday-face p:not(.spark) {
     font-size: 0.82rem;
   }
 }
+
+/* ===================================================================
+   RESPONSIVE: Landscape mode on phones
+   =================================================================== */
+
+@media (max-height: 500px) and (orientation: landscape) {
+  .scene-button {
+    width: min(60vh, 380px);
+    height: 88svh;
+    border-radius: 22px;
+  }
+
+  .message-scene,
+  .fine-scene {
+    padding: 20px;
+  }
+
+  .envelope-scene {
+    padding: 0;
+  }
+
+  h1 {
+    font-size: clamp(1.6rem, 5vh, 2.4rem);
+  }
+
+  .fine-word {
+    font-size: clamp(2.5rem, 8vh, 4rem);
+    width: 200px;
+    height: 100px;
+  }
+
+  .envelope {
+    width: min(50vh, 240px);
+    height: calc(min(50vh, 240px) / 1.32);
+  }
+
+  .envelope-scene {
+    perspective: 1000px;
+  }
+
+  .birthday-face,
+  .card-final {
+    padding: 8cqi 6cqi;
+    gap: 6px;
+  }
+
+  .birthday-face .spark {
+    font-size: clamp(1.2rem, 7cqi, 1.8rem);
+  }
+
+  .birthday-face h2 {
+    font-size: clamp(0.85rem, 4.5cqi, 1.1rem);
+  }
+
+  .birthday-face p:not(.spark) {
+    font-size: clamp(0.75rem, 3.8cqi, 0.95rem);
+    line-height: 1.25;
+  }
+
+  .hint {
+    bottom: 10px;
+    font-size: 0.68rem;
+  }
+
+  /* Use reduced-Z keyframes in landscape too */
+  .envelope.card-out .card {
+    animation-name: cardEmerge-sm;
+  }
+
+  .envelope.card-flipped .card {
+    animation-name: cardFlipReveal-sm;
+  }
+
+  .envelope.final-flipped .card {
+    animation-name: cardFlipFinal-sm;
+  }
+}
+
+/* ===================================================================
+   SMALL-SCREEN CARD KEYFRAMES (reduced Z-depth to prevent tilt)
+   =================================================================== */
+
+@keyframes cardEmerge-sm {
+  0% {
+    transform: translate3d(-50%, 6%, -4px);
+  }
+  55% {
+    transform: translate3d(-50%, -82%, 28px) scale(1.06);
+  }
+  72% {
+    transform: translate3d(-50%, -74%, 32px) scale(1.04);
+  }
+  100% {
+    transform: translate3d(-50%, -78%, 34px) scale(1.05);
+  }
+}
+
+@keyframes cardFlipReveal-sm {
+  0% {
+    transform: translate3d(-50%, -78%, 34px) scale(1.05) rotateY(0deg);
+  }
+  30% {
+    transform: translate3d(-50%, -78%, 34px) scale(1.02) rotateY(90deg);
+  }
+  55% {
+    transform: translate3d(-50%, -78%, 34px) scale(1.05) rotateY(0deg);
+  }
+  100% {
+    transform: translate3d(-50%, -58%, 34px) scale(1.15) rotateY(0deg);
+  }
+}
+
+@keyframes cardFlipFinal-sm {
+  0% {
+    transform: translate3d(-50%, -58%, 34px) scale(1.15) rotateY(0deg);
+  }
+  30% {
+    transform: translate3d(-50%, -58%, 34px) scale(1.1) rotateY(90deg);
+  }
+  55%, 100% {
+    transform: translate3d(-50%, -58%, 34px) scale(1.15) rotateY(0deg);
+  }
+}
+
+/* ===================================================================
+   ACCESSIBILITY: Reduced motion
+   =================================================================== */
 
 @media (prefers-reduced-motion: reduce) {
   *,
