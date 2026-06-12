@@ -19,6 +19,7 @@
 
   let step = 0;
   let autoFlipTimer;
+  let fineTimeout;
   /** Intentional debounce flag — prevents rapid clicks from skipping animation steps */
   let busy = false;
 
@@ -132,6 +133,7 @@
 
     step += 1;
     window.clearTimeout(autoFlipTimer);
+    window.clearTimeout(fineTimeout);
 
     if (step === 1) {
       setMessage('Told you,', "nothing interesting, don't click");
@@ -144,6 +146,12 @@
       setMessage('', 'Fine.');
       setHint(hints[2]);
       setBusy(360);
+      
+      fineTimeout = window.setTimeout(function () {
+        if (step === 2) {
+          advance(true);
+        }
+      }, 5000);
       return;
     }
 

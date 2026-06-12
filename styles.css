@@ -183,7 +183,7 @@ body.magical-theme .scene-button {
 .small-text {
   margin: 0;
   color: rgba(255, 244, 220, 0.62);
-  font-size: clamp(0.78rem, 1.5vw, 1rem);
+  font-size: clamp(0.7rem, 1.3vw, 0.88rem);
   font-weight: 800;
   letter-spacing: 0.12em;
   line-height: 1.35;
@@ -193,7 +193,7 @@ body.magical-theme .scene-button {
 h1 {
   width: min(100%, 14ch);
   margin: 0;
-  font-size: clamp(2.35rem, 6vw, 3.55rem);
+  font-size: clamp(1.5rem, 4.2vw, 2.3rem);
   font-weight: 900;
   letter-spacing: 0;
   line-height: 1.02;
@@ -210,7 +210,7 @@ h1 {
   width: 260px;
   height: 150px;
   color: var(--cream);
-  font-size: clamp(3.25rem, 11vw, 5.3rem);
+  font-size: clamp(2.4rem, 8vw, 3.8rem);
   font-weight: 900;
   letter-spacing: -0.01em;
   text-shadow: 0 18px 36px rgba(0, 0, 0, 0.38);
@@ -878,7 +878,7 @@ h1 {
   }
 
   h1 {
-    font-size: clamp(2.1rem, 11vw, 3.1rem);
+    font-size: clamp(1.4rem, 7.5vw, 2.0rem);
   }
 
   .envelope {
@@ -976,12 +976,12 @@ h1 {
   }
 
   h1 {
-    font-size: clamp(1.95rem, 10vw, 2.8rem);
+    font-size: clamp(1.25rem, 7vw, 1.8rem);
     width: min(100%, 13ch);
   }
 
   .small-text {
-    font-size: clamp(0.7rem, 1.8vw, 0.88rem);
+    font-size: clamp(0.62rem, 1.5vw, 0.78rem);
     letter-spacing: 0.1em;
   }
 
@@ -1048,11 +1048,11 @@ h1 {
   }
 
   h1 {
-    font-size: clamp(1.6rem, 5vh, 2.4rem);
+    font-size: clamp(1.1rem, 3.5vh, 1.6rem);
   }
 
   .fine-word {
-    font-size: clamp(2.5rem, 8vh, 4rem);
+    font-size: clamp(1.9rem, 6vh, 3.0rem);
     width: 200px;
     height: 100px;
   }
