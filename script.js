@@ -332,16 +332,9 @@
      EVENT LISTENERS
      ----------------------------------------------------------------- */
 
-  sceneButton.addEventListener('pointerup', function (event) {
+  sceneButton.addEventListener('click', function (event) {
     event.preventDefault();
     advance(false);
-  });
-
-  sceneButton.addEventListener('keydown', function (event) {
-    if (event.key === 'Enter' || event.key === ' ') {
-      event.preventDefault();
-      advance(false);
-    }
   });
 
   /* -----------------------------------------------------------------
